@@ -3,8 +3,6 @@ import cors from 'cors';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
 import config from './config';
-import { uptime } from 'process';
-import { timeStamp } from 'console';
 
 const app: Application = express();
 app.use(cors({
@@ -12,7 +10,6 @@ app.use(cors({
     credentials: true
 }));
 
-//parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,7 +25,6 @@ app.get('/', (req: Request, res: Response) => {
 
 
 app.use(globalErrorHandler);
-
 app.use(notFound);
 
 export default app;

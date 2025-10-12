@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('PATIENT', 'DOCTOR', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('PATIENT', 'DOCTOR', 'ADMIN');
 
 -- CreateEnum
 CREATE TYPE "UserStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'DELETED');
@@ -12,7 +12,7 @@ CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL DEFAULT 'PATIENT',
+    "role" "Role" NOT NULL DEFAULT 'PATIENT',
     "needPasswordChange" BOOLEAN NOT NULL DEFAULT true,
     "status" "UserStatus" NOT NULL DEFAULT 'ACTIVE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -22,21 +22,7 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "admins" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "profilePhoto" TEXT,
-    "contactNumber" TEXT NOT NULL,
-    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "admins_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "doctors" (
+CREATE TABLE "doctos" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -54,7 +40,21 @@ CREATE TABLE "doctors" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "doctors_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "doctos_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "admins" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "profilePhoto" TEXT,
+    "contactNumber" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "admins_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -75,19 +75,19 @@ CREATE TABLE "patients" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "admins_email_key" ON "admins"("email");
+CREATE UNIQUE INDEX "doctos_email_key" ON "doctos"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "doctors_email_key" ON "doctors"("email");
+CREATE UNIQUE INDEX "admins_email_key" ON "admins"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "patients_email_key" ON "patients"("email");
 
 -- AddForeignKey
-ALTER TABLE "admins" ADD CONSTRAINT "admins_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "doctos" ADD CONSTRAINT "doctos_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "doctors" ADD CONSTRAINT "doctors_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "admins" ADD CONSTRAINT "admins_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "patients" ADD CONSTRAINT "patients_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
