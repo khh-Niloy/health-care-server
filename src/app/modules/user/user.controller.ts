@@ -9,7 +9,7 @@ const createPatient = async (req: Request, res: Response) => {
       req.body,
       req.file as Express.Multer.File
     );
-    console.log(data)
+    console.log(data);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -26,6 +26,29 @@ const createPatient = async (req: Request, res: Response) => {
   }
 };
 
+const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const { data, meta } = await userService.getAllUsersService(
+      req.query as Record<string, string>
+    );
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Users fetched successfully",
+      meta: meta,
+      data: data,
+    });
+  } catch (error) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: "Users fetched failed",
+      data: error,
+    });
+  }
+};
+
 export const userController = {
   createPatient,
+  getAllUsers,
 };
