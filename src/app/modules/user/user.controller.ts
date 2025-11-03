@@ -48,7 +48,30 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+const createDoctor = async (req: Request, res: Response) => {
+  try {
+    const data = await userService.createDoctorService(
+      req.body,
+      req.file as Express.Multer.File
+    );
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Doctor created successfully",
+      data: data,
+    });
+  } catch (error) {
+    sendResponse(res, {
+      statusCode: 500,
+      success: false,
+      message: "Doctor created failed",
+      data: error,
+    });
+  }
+};
+
 export const userController = {
   createPatient,
   getAllUsers,
+  createDoctor,
 };

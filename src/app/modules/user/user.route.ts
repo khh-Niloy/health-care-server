@@ -1,6 +1,6 @@
 import express from "express";
 import { userController } from "./user.controller";
-import { createPatientZodSchema } from "./user.validation.zod";
+import { createDoctorZodSchema, createPatientZodSchema } from "./user.validation.zod";
 import { validateSchema } from "../../middlewares/validateSchema";
 import { upload } from "../../helper/fileUpload";
 import { roleBasedProtection } from "../../middlewares/roleBasedProtection";
@@ -19,4 +19,11 @@ userRoutes.get(
   "/all-users",
   roleBasedProtection(ERole.ADMIN, ERole.DOCTOR, ERole.PATIENT),
   userController.getAllUsers
+);
+
+userRoutes.post(
+  "/create-doctor",
+  upload.single("file"),
+  validateSchema(createDoctorZodSchema),
+  userController.createDoctor
 );

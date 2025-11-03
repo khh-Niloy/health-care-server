@@ -3,7 +3,7 @@ import { uploadToCloudinary } from "../../helper/fileUpload";
 import { prisma } from "../../lib/prisma";
 import { passwordService } from "../../utils/passwordService";
 import pick from "../../utils/pick";
-import { ICreatePatient } from "./user.interface";
+import { ERole, ICreatePatient } from "./user.interface";
 
 const createPatientService = async (
   payload: ICreatePatient,
@@ -116,7 +116,39 @@ const getAllUsersService = async (query: Record<string, string>) => {
   };
 };
 
+const createDoctorService = async (
+  payload: any,
+  file: Express.Multer.File
+) => {
+  if (file) {
+    const uploadResult = await uploadToCloudinary(file);
+    payload.profilePhoto = uploadResult;
+  }
+
+  const { password, ...restPayload } = payload;
+
+  const hashPassword = await passwordService.hashPassword(password as string);
+  const userPayload = {
+    email: payload.email,
+    password: hashPassword,
+    role: ERole.DOCTOR,
+  };
+
+  const result = await prisma.$transaction(async (tnx) => {
+    await tnx.user.create({
+      data: userPayload,
+    });
+
+    return await tnx.doctor.create({
+      data: restPayload,
+    });
+  });
+
+  return result;
+};
+
 export const userService = {
   createPatientService,
   getAllUsersService,
+  createDoctorService,
 };
