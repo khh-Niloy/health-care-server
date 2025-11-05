@@ -1,6 +1,8 @@
 import { prisma } from "../../lib/prisma";
+import ApiError from "../../middlewares/ApiError";
 import { passwordService } from "../../utils/passwordService";
 import { tokenService } from "../../utils/tokenService";
+import httpStatus from "http-status";
 
 const userLoginService = async (playLoad: {
   email: string;
@@ -28,7 +30,7 @@ const userLoginService = async (playLoad: {
   );
 
   if (!checkPassword) {
-    throw new Error("password did not match!");
+    throw new ApiError(httpStatus.BAD_REQUEST, "password did not match!");
   }
 
   const jwtPayload = {
