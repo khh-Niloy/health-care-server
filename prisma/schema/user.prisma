@@ -32,8 +32,11 @@ model Doctor{
   isDeleted           Boolean  @default(false)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  
   doctorSchedules DoctorSchedule[]
-
+  doctorSpecialties DoctorSpecialties[]
+  appointments Appointment[]
+  prescriptions Prescription[]
   user User @relation(fields: [email], references: [email])
 
   @@map("doctos")
@@ -63,6 +66,8 @@ model Patient {
   isDeleted    Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  appointments Appointment[]
+  prescriptions Prescription[]
 
   user User @relation(fields: [email], references: [email])
 

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ZodObject } from "zod";
 
 export const validateSchema =
-  (schema: ZodObject) =>
+  (schema: ZodObject<any>) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       if(req.body.data){

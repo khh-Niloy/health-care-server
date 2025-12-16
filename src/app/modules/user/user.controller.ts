@@ -1,15 +1,14 @@
 import sendResponse from "../../shared/sendResponse";
 import { userService } from "./user.service";
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { Request } from "express";
 
-const createPatient = async (req: Request, res: Response) => {
+const createPatient = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = await userService.createPatientService(
       req.body,
       req.file as Express.Multer.File
     );
-    console.log(data);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -17,12 +16,7 @@ const createPatient = async (req: Request, res: Response) => {
       data: data,
     });
   } catch (error) {
-    sendResponse(res, {
-      statusCode: 500,
-      success: false,
-      message: "Patient created failed",
-      data: error,
-    });
+    next(error);
   }
 };
 

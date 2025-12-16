@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { authService } from "./auth.service";
 import { cookiesManagement } from "../../utils/cookiesManagement";
 import { successResponse } from "../../utils/successResponse";
 
-const userLogin = async (req: Request, res: Response) => {
+const userLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const loggedInUser = await authService.userLoginService(req.body);
 
@@ -21,10 +21,7 @@ const userLogin = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(400).json({
-      success: false,
-      message: (error as Error).message,
-    });
+    next(error);
   }
 };
 
@@ -54,7 +51,7 @@ const getNewAccessToken = async (req: Request, res: Response) => {
 
 const userLogOut = async (req: Request, res: Response) => {
   try {
-    cookiesManagement.clearCookies(res)
+    cookiesManagement.clearCookies(res);
 
     successResponse(res, {
       statusCode: 201,
